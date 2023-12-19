@@ -1,0 +1,5 @@
+// filters out a school that starts with given
+// name using regex
+db.school.aggregate(
+	{$match: {name: {$regex: "^Holberton"}}}
+);
