@@ -1,0 +1,3 @@
+// Show all documents in the
+// "school" collection of a database
+db.school.find()
