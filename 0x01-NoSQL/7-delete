@@ -1,0 +1,5 @@
+// delete all documents in school collection of
+// given database that matches the query
+db.school.deleteMany(
+	{ name: "Holberton school"},
+);
