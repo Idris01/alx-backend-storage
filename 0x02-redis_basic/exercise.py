@@ -3,12 +3,28 @@
 """
 import redis
 import uuid
-from typing import Union, Callable
+from typing import Union, Callable, Any, AnyStr
 from functools import wraps
 
 types = [int, str, float, bytes]
 DataType = Union[int, str, float, bytes]
 GetReturnType = Union[int, str, float, bytes, None]
+
+
+def replay(method) -> None:
+    """Replay the call to a given method using the log
+    """
+    self = method.__self__
+    key = method.__qualname__
+    in_key = f"{key}:inputs"
+    out_key = f"{key}:outputs"
+    in_list = self._redis.lrange(in_key, 0, -1)
+    out_list = self._redis.lrange(out_key, 0, -1)
+    print(f'Cache.store was called {int(self._redis.get(key))} times:')
+    for this_key, value in zip(*(in_list, out_list)):
+        print("Cache.store(*{}) -> {}".format(
+            this_key.decode("utf-8"),
+            value.decode('utf-8')))
 
 
 def call_history(method: Callable) -> Callable:
