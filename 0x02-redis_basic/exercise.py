@@ -5,6 +5,7 @@ import redis
 import uuid
 from typing import Union
 
+types = [int, str, float, bytes]
 DataType = Union[int, str, float, bytes]
 
 
@@ -22,5 +23,8 @@ class Cache:
         Return a string representing the key
         """
         key = str(uuid.uuid4())
+        if type(data) not in types:
+            data = str(data)
+
         self._redis.set(key, data)
         return key
