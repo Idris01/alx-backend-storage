@@ -11,6 +11,22 @@ DataType = Union[int, str, float, bytes]
 GetReturnType = Union[int, str, float, bytes, None]
 
 
+def call_history(method: Callable) -> Callable:
+    """set up a call history by adding input parameter to a list
+    and the output to another list
+    """
+    @wraps(method)
+    def wrapper(self, *args):
+        key = method.__qualname__
+        in_key = f"{key}:inputs"
+        out_key = f"{key}:outputs"
+        output = method(self, *args)
+        self._redis.rpush(in_key, str(args))
+        self._redis.rpush(out_key, str(output))
+        return output
+    return wrapper
+
+
 def count_calls(method: Callable) -> Callable:
     """Manage the number of calls of methods
     """
@@ -30,6 +46,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: DataType) -> str:
         """Stores a given data in memory
