@@ -7,7 +7,7 @@ from typing import Union, Callable, Any, AnyStr
 from functools import wraps
 
 types = [int, str, float, bytes]
-DataType = Union[int, str, float, bytes]
+DataType = Union[str, bytes, int, float]
 GetReturnType = Union[int, str, float, bytes, None]
 
 
