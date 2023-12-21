@@ -20,5 +20,5 @@ def get_page(url: str) -> str:
 
     resp = requests.get(url)
     content = resp.text
-    db.set(url, content, ex=10)
+    db.setex(url, 10, content)
     return content
